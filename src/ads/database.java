@@ -1477,7 +1477,40 @@ public class database extends javax.swing.JFrame {
 
     private void deletebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebtnActionPerformed
                
-        
+         int selectedRow = emptable.getSelectedRow();
+
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(this,"Please Select an Employee First");
+                    return;
+                }
+
+                String employee_id = emptable.getValueAt(selectedRow, 0).toString();
+
+                try { 
+                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+                    String url = "jdbc:sqlserver://localhost:1433;" +
+                                 "databaseName=attendance_sys;" +
+                                 "user=sa;" +
+                                 "password=sean;" +
+                                 "encrypt=true;" +
+                                 "trustServerCertificate=true;";
+
+                    try (Connection con = DriverManager.getConnection(url)) {
+
+                        String deleteQuery = "DELETE FROM Employees WHERE employee_id=?";
+                        PreparedStatement ps = con.prepareStatement(deleteQuery);
+                        ps.setString(1, employee_id);
+
+                        ps.executeUpdate();
+                        loadEmployees(); // reload JTable
+                        JOptionPane.showMessageDialog(this, "Deleted Successfully");
+                    }
+
+                } catch(Exception e){
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                }
+
         
         
         
