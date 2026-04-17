@@ -1519,12 +1519,14 @@ public class database extends javax.swing.JFrame {
     
     
     private void clearbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearbtnActionPerformed
-
-        
-        
-        
-        
-        
+        fname.setText("");
+        lname.setText("");
+        empEmail.setText("");
+        departmentcb.setSelectedIndex(-1); // resets to blank first item
+        positioncb.setSelectedIndex(-1);   // resets to blank first item
+        shiftcb.setSelectedIndex(-1);      // resets to blank first item
+        fname.requestFocus();             // puts cursor back on first field
+   
     }//GEN-LAST:event_clearbtnActionPerformed
 
     private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
