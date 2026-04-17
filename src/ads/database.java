@@ -30,33 +30,7 @@ public class database extends javax.swing.JFrame {
         loadDepartments();
         loadShift();
         
-        // Search bar listeners — Home (Attendance) table
-        jButton1.addActionListener(e -> {
-            String keyword = jTextField2.getText().trim();
-            if (keyword.isEmpty()) { loadAttendance(); } else { searchAttendance(keyword); }
-        });
-        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String keyword = jTextField2.getText().trim();
-                    if (keyword.isEmpty()) { loadAttendance(); } else { searchAttendance(keyword); }
-                }
-            }
-        });
         
-        // Search bar listeners — Employee table
-        jButton2.addActionListener(e -> {
-            String keyword = jTextField1.getText().trim();
-            if (keyword.isEmpty()) { loadEmployees(); } else { searchEmployees(keyword); }
-        });
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String keyword = jTextField1.getText().trim();
-                    if (keyword.isEmpty()) { loadEmployees(); } else { searchEmployees(keyword); }
-                }
-            }
-        });
     }
     //clock
     private void startClock() {
