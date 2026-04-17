@@ -29,6 +29,21 @@ public class database extends javax.swing.JFrame {
         loadAttendance();
         loadDepartments();
         loadShift();
+
+        // Search bar listeners — Home (Attendance) table
+        jButton1.addActionListener(e -> {
+            String keyword = jTextField2.getText().trim();
+            if (keyword.isEmpty()) { loadAttendance(); } else { searchAttendance(keyword); }
+        });
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String keyword = jTextField2.getText().trim();
+                    if (keyword.isEmpty()) { loadAttendance(); } else { searchAttendance(keyword); }
+                }
+            }
+        });
+
         
         
     }
