@@ -1300,7 +1300,65 @@ public class database extends javax.swing.JFrame {
 
     
     private void registerempMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerempMouseClicked
-           
+             if (fname.getText().trim().isEmpty() ||
+                 lname.getText().trim().isEmpty() ||
+                 empEmail.getText().trim().isEmpty() ||
+                 positioncb.getSelectedItem() == null ||
+                 departmentcb.getSelectedItem() == null ||
+                 shiftcb.getSelectedItem() == null) {
+
+                 JOptionPane.showMessageDialog(this,
+                     "All fields are required. Please fill in everything."
+                     );
+                 return; 
+             }
+                    
+        try{
+                        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                        
+                        
+                        String url = "jdbc:sqlserver://localhost:1433;" +
+                                "databaseName=attendance_sys;" +
+                                "user=sa;" +
+                                "password=sean;" +
+                                "encrypt=true;" +
+                                "trustServerCertificate=true;";
+                        
+                      Connection con = DriverManager.getConnection(url);
+                      String inputData = "INSERT INTO Employees" + 
+                              "(first_name,last_name,position,department_id, email, shift_id)" +
+                              "VALUES (?,?,?,?,?,?)";
+                      
+                      PreparedStatement pst = con.prepareStatement(inputData);
+                        pst.setString(1, fname.getText());
+                        pst.setString(2, lname.getText());
+                        pst.setString(3, positioncb.getSelectedItem().toString());
+
+                        //get only the department_id before " - "
+                        String selected = departmentcb.getSelectedItem().toString();
+                        int deptId = Integer.parseInt(selected.split(" - ")[0]);
+                        pst.setInt(4, deptId);
+                        pst.setString(5, empEmail.getText());
+                        String select = shiftcb.getSelectedItem().toString();
+                        int shiftId = Integer.parseInt(select.split(" - ")[0]);
+                        pst.setInt(6, shiftId);
+                        
+                      pst.executeUpdate();
+                      loadEmployees();
+                      con.close();
+                      JOptionPane.showMessageDialog(this, "Registered Successfully");
+                      
+                      fname.setText("");
+                      lname.setText("");
+                      positioncb.setSelectedIndex(-1);
+                      departmentcb.setSelectedIndex(-1);
+                      empEmail.setText("");
+                      shiftcb.setSelectedIndex(-1);
+                      
+                }catch(Exception error){
+                    JOptionPane.showMessageDialog(this, error.getMessage() + error);
+                }
+
         
         
         
