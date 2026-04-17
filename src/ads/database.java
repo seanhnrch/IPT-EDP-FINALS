@@ -57,11 +57,29 @@ public class database extends javax.swing.JFrame {
                 }
             }
         });
-
-
-        
-        
     }
+
+    //clock
+    private void startClock() {
+
+        TimeZone tz = TimeZone.getTimeZone("Asia/Manila");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM dd yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
+        
+    
+        timeFormat.setTimeZone(tz);
+        dateFormat.setTimeZone(tz);
+    
+        Timer timer = new Timer(1000, e -> {
+            Date now = new Date();
+            
+            time.setText(timeFormat.format(now));
+            date.setText(dateFormat.format(now));
+        });
+    
+        timer.start();
+    }
+
 
     
 
