@@ -32,42 +32,9 @@ public class database extends javax.swing.JFrame {
         
         
     }
-    //clock
-    private void startClock() {
 
-    TimeZone tz = TimeZone.getTimeZone("Asia/Manila");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM dd yyyy");
-    SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss a");
     
 
-    timeFormat.setTimeZone(tz);
-    dateFormat.setTimeZone(tz);
-
-    Timer timer = new Timer(1000, e -> {
-    Date now = new Date();
-        time.setText(timeFormat.format(now));
-        date.setText(dateFormat.format(now));
-    });
-
-    timer.start();
-}
-    
-       // SHA-256 hashing method for password security
-    private String hashSHA256(String input) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(input.getBytes("UTF-8"));
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hashBytes) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("SHA-256 hashing failed", e);
-        }
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1113,90 +1080,20 @@ public class database extends javax.swing.JFrame {
 
     
     private void passwordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordKeyPressed
-        if (evt.getKeyCode() != KeyEvent.VK_ENTER) {
-    return; 
-}
-                if (email.getText().trim().isEmpty() ||password.getText().trim().isEmpty()) {
-
-                         JOptionPane.showMessageDialog(this,
-                             "Please Enter Your Email or Password!."
-                             );
-                         return;
-                     }
-
-        String Email = email.getText();
-        String Password = hashSHA256(new String(password.getPassword()));
 
         
-        try{
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                        
-                        String serverName = "jdbc:sqlserver://localhost:1433;" +
-                                "databaseName=attendance_sys;" +
-                                "user=sa;" +
-                                "password=sean;" +
-                                "encrypt=true;" +
-                                "trustServerCertificate=true;";
-                        
-              Connection con = DriverManager.getConnection(serverName);
-                      String loginQuery = "SELECT * FROM Admins WHERE email = ? AND password = ?";
-                      PreparedStatement ps = con.prepareStatement(loginQuery);
-                      ps.setString(1, Email);
-                      
-                      ps.setString(2, Password);
-                      
-                      ResultSet rs = ps.executeQuery();
-                       if(rs.next()){
-                             CardLayout cl = (CardLayout)(getContentPane().getLayout());
-                           cl.show(getContentPane(), "table");
-                      
-                       }else{
-                             JOptionPane.showMessageDialog(this, "incorrect password or email");
-                              }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "User does not exist");
-        }
+        
+        
+        
+        
     }//GEN-LAST:event_passwordKeyPressed
 
     private void loginbtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginbtnMouseClicked
-        if (email.getText().trim().isEmpty() ||password.getText().trim().isEmpty()) {
-
-                         JOptionPane.showMessageDialog(this,
-                             "Please Enter Your Email or Password!."
-                             );
-                         return;
-                     }
-
-        String Email = email.getText();
-        String Password = hashSHA256(new String(password.getPassword()));
+       
         
-        try{
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                        
-                        String serverName = "jdbc:sqlserver://localhost1433;" +
-                                "databaseName=attendance_sys;" +
-                                "user=sa;" +
-                                "password=sean;" +
-                                "encrypt=true;" +
-                                "trustServerCertificate=true;";
-            
-              Connection con = DriverManager.getConnection(serverName);
-                      String loginQuery = "SELECT * FROM Admins WHERE email = ? AND password = ?";
-                      PreparedStatement ps = con.prepareStatement(loginQuery);
-                      ps.setString(1, Email);
-                      ps.setString(2, Password);
-                      
         
-                      ResultSet rs = ps.executeQuery();
-                       if(rs.next()){
-                             JOptionPane.showMessageDialog(this, "incorrect password or email");
-                       }else{
-                             CardLayout cl = (CardLayout)(getContentPane().getLayout());
-                           cl.show(getContentPane(), "table");
-                              }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "User does not exist");
-        }
+        
+        
     }//GEN-LAST:event_loginbtnMouseClicked
 
     private void empviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_empviewMouseClicked
@@ -1268,64 +1165,12 @@ public class database extends javax.swing.JFrame {
 
     
     private void registerempMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerempMouseClicked
-             if (fname.getText().trim().isEmpty() ||
-                 lname.getText().trim().isEmpty() ||
-                 empEmail.getText().trim().isEmpty() ||
-                 positioncb.getSelectedItem() == null ||
-                 departmentcb.getSelectedItem() == null ||
-                 shiftcb.getSelectedItem() == null) {
-
-                 JOptionPane.showMessageDialog(this,
-                     "All fields are required. Please fill in everything."
-                     );
-                 return; 
-             }
-                    
-        try{
-                        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                        
-                        
-                        String url = "jdbc:sqlserver://localhost:1433;" +
-                                "databaseName=attendance_sys;" +
-                                "user=sa;" +
-                                "password=sean;" +
-                                "encrypt=true;" +
-                                "trustServerCertificate=true;";
-                        
-                      Connection con = DriverManager.getConnection(url);
-                      String inputData = "INSERT INTO Employees" + 
-                              "(first_name,last_name,position,department_id, email, shift_id)" +
-                              "VALUES (?,?,?,?,?,?)";
-                      
-                      PreparedStatement pst = con.prepareStatement(inputData);
-                        pst.setString(1, fname.getText());
-                        pst.setString(2, lname.getText());
-                        pst.setString(3, positioncb.getSelectedItem().toString());
-
-                        //get only the department_id before " - "
-                        String selected = departmentcb.getSelectedItem().toString();
-                        int deptId = Integer.parseInt(selected.split(" - ")[0]);
-                        pst.setInt(4, deptId);
-                        pst.setString(5, empEmail.getText());
-                        String select = shiftcb.getSelectedItem().toString();
-                        int shiftId = Integer.parseInt(select.split(" - ")[0]);
-                        pst.setInt(6, shiftId);
-                        
-                      pst.executeUpdate();
-                      loadEmployees();
-                      con.close();
-                      JOptionPane.showMessageDialog(this, "Registered Successfully");
-                      
-                      fname.setText("");
-                      lname.setText("");
-                      positioncb.setSelectedIndex(-1);
-                      departmentcb.setSelectedIndex(-1);
-                      empEmail.setText("");
-                      shiftcb.setSelectedIndex(-1);
-                      
-                }catch(Exception error){
-                    JOptionPane.showMessageDialog(this, error.getMessage() + error);
-                }
+           
+        
+        
+        
+        
+        
     }//GEN-LAST:event_registerempMouseClicked
 
     private void enterbtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_enterbtnMouseClicked
@@ -1438,51 +1283,22 @@ public class database extends javax.swing.JFrame {
     }//GEN-LAST:event_enterbtnMouseClicked
 
     private void deletebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebtnActionPerformed
-                int selectedRow = emptable.getSelectedRow();
-
-                if (selectedRow == -1) {
-                    JOptionPane.showMessageDialog(this,"Please Select an Employee First");
-                    return;
-                }
-
-                String employee_id = emptable.getValueAt(selectedRow, 0).toString();
-
-                try { 
-                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-
-                    String url = "jdbc:sqlserver://localhost:1433;" +
-                                 "databaseName=attendance_sys;" +
-                                 "user=sa;" +
-                                 "password=sean;" +
-                                 "encrypt=true;" +
-                                 "trustServerCertificate=true;";
-
-                    try (Connection con = DriverManager.getConnection(url)) {
-
-                        String deleteQuery = "DELETE FROM Employees WHERE employee_id=?";
-                        PreparedStatement ps = con.prepareStatement(deleteQuery);
-                        ps.setString(1, employee_id);
-
-                        ps.executeUpdate();
-                        loadEmployees(); // reload JTable
-                        JOptionPane.showMessageDialog(this, "Deleted Successfully");
-                    }
-
-                } catch(Exception e){
-                    JOptionPane.showMessageDialog(this, e.getMessage());
-                }
+               
+        
+        
+        
+        
     }//GEN-LAST:event_deletebtnActionPerformed
 
     
     
     private void clearbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearbtnActionPerformed
-        fname.setText("");
-        lname.setText("");
-        empEmail.setText("");
-        departmentcb.setSelectedIndex(-1); // resets to blank first item
-        positioncb.setSelectedIndex(-1);   // resets to blank first item
-        shiftcb.setSelectedIndex(-1);      // resets to blank first item
-        fname.requestFocus();             // puts cursor back on first field
+
+        
+        
+        
+        
+        
     }//GEN-LAST:event_clearbtnActionPerformed
 
     private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
@@ -1853,57 +1669,7 @@ public class database extends javax.swing.JFrame {
         }
     }
 
-    private void searchEmployees(String keyword) {
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://localhost:1433;"
-                       + "databaseName=attendance_sys;"
-                       + "user=sa;"
-                       + "password=sean;"
-                       + "encrypt=true;"
-                       + "trustServerCertificate=true;";
 
-            Connection con = DriverManager.getConnection(url);
-
-            String sql = "SELECT e.employee_id, e.first_name, e.last_name, " +
-                         "d.department_name, s.shift_name, e.position, e.email " +
-                         "FROM Employees e " +
-                         "JOIN Departments d ON e.department_id = d.department_id " +
-                         "JOIN Shifts s ON e.shift_id = s.shift_id " +
-                         "WHERE CAST(e.employee_id AS VARCHAR) LIKE ? " +
-                         "OR e.first_name LIKE ? " +
-                         "OR e.last_name LIKE ? " +
-                         "OR e.position LIKE ? " +
-                         "OR d.department_name LIKE ? " +
-                         "OR e.email LIKE ? " +
-                         "OR s.shift_name LIKE ?";
-
-            PreparedStatement ps = con.prepareStatement(sql);
-            String pattern = "%" + keyword + "%";
-            for (int i = 1; i <= 7; i++) { ps.setString(i, pattern); }
-
-            ResultSet rs = ps.executeQuery();
-            DefaultTableModel model = (DefaultTableModel) emptable.getModel();
-            model.setRowCount(0);
-
-            while (rs.next()) {
-                Object[] data = {
-                    rs.getInt("employee_id"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getString("position"),
-                    rs.getString("department_name"),
-                    rs.getString("email"),
-                    rs.getString("shift_name")
-                };
-                model.addRow(data);
-            }
-
-            rs.close(); ps.close(); con.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
-    }
 
     
     /**
