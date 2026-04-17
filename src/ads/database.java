@@ -1896,10 +1896,58 @@ public class database extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
+        private void searchEmployees(String keyword) {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://localhost:1433;"
+                       + "databaseName=attendance_sys;"
+                       + "user=sa;"
+                       + "password=sean;"
+                       + "encrypt=true;"
+                       + "trustServerCertificate=true;";
 
+            Connection con = DriverManager.getConnection(url);
 
+            String sql = "SELECT e.employee_id, e.first_name, e.last_name, " +
+                         "d.department_name, s.shift_name, e.position, e.email " +
+                         "FROM Employees e " +
+                         "JOIN Departments d ON e.department_id = d.department_id " +
+                         "JOIN Shifts s ON e.shift_id = s.shift_id " +
+                         "WHERE CAST(e.employee_id AS VARCHAR) LIKE ? " +
+                         "OR e.first_name LIKE ? " +
+                         "OR e.last_name LIKE ? " +
+                         "OR e.position LIKE ? " +
+                         "OR d.department_name LIKE ? " +
+                         "OR e.email LIKE ? " +
+                         "OR s.shift_name LIKE ?";
 
-    
+            PreparedStatement ps = con.prepareStatement(sql);
+            String pattern = "%" + keyword + "%";
+            for (int i = 1; i <= 7; i++) { ps.setString(i, pattern); }
+
+            ResultSet rs = ps.executeQuery();
+            DefaultTableModel model = (DefaultTableModel) emptable.getModel();
+            model.setRowCount(0);
+
+            while (rs.next()) {
+                Object[] data = {
+                    rs.getInt("employee_id"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("position"),
+                    rs.getString("department_name"),
+                    rs.getString("email"),
+                    rs.getString("shift_name")
+                };
+                model.addRow(data);
+            }
+
+            rs.close(); ps.close(); con.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
