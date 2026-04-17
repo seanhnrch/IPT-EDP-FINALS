@@ -1142,12 +1142,52 @@ public class database extends javax.swing.JFrame {
 
     
     private void passwordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordKeyPressed
+    //pasword key press
+
+        if (evt.getKeyCode() != KeyEvent.VK_ENTER) {
+    return; 
+}
+                if (email.getText().trim().isEmpty() ||password.getText().trim().isEmpty()) {
+
+                         JOptionPane.showMessageDialog(this,
+                             "Please Enter Your Email or Password!."
+                             );
+                         return;
+                     }
+
+        String Email = email.getText();
+        String Password = hashSHA256(new String(password.getPassword()));
 
         
-        
-        
-        
-        
+        try{
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                        
+                        String serverName = "jdbc:sqlserver://localhost:1433;" +
+                                "databaseName=attendance_sys;" +
+                                "user=sa;" +
+                                "password=sean;" +
+                                "encrypt=true;" +
+                                "trustServerCertificate=true;";
+                        
+              Connection con = DriverManager.getConnection(serverName);
+                      String loginQuery = "SELECT * FROM Admins WHERE email = ? AND password = ?";
+                      PreparedStatement ps = con.prepareStatement(loginQuery);
+                      ps.setString(1, Email);
+                      
+                      ps.setString(2, Password);
+                      
+                      ResultSet rs = ps.executeQuery();
+                                  CardLayout cl = (CardLayout)(getContentPane().getLayout());
+                           cl.show(getContentPane(), "table");
+                      
+                       }else{
+                             JOptionPane.showMessageDialog(this, "incorrect password or email");
+                              }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(this, "User does not exist");
+        }
+
+           
     }//GEN-LAST:event_passwordKeyPressed
 
     private void loginbtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginbtnMouseClicked
